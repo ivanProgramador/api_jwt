@@ -35,7 +35,7 @@ Caso essa reposta ocorra isso indica que houve um falha no momento da autentica�
 ### Gerando token
 O token de auteticação é gerado dentro do localStorage assim que o usuario faz o login e esse token é consultado em todas as rotas
 ### Rotas 
-# autenticação:   POST http://localhost:8080/auth 
-# lista de jogos: GET  http://localhost:8080/games
-# atualizar um jogo especifico: PUT http://localhost:8080/games/id 
-# deletar um jogo: DELETE http://localhost:8080/games/id 
+#### autenticação:   POST http://localhost:8080/auth 
+#### lista de jogos: GET  http://localhost:8080/games
+#### atualizar um jogo especifico: PUT http://localhost:8080/games/id 
+#### deletar um jogo: DELETE http://localhost:8080/games/id 
