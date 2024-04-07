@@ -33,7 +33,7 @@ Caso essa resposta ocorra a requisição vai retornar a lista de games cadastrad
 ### falha na autenticação ! 401 
 Caso essa reposta ocorra isso indica que houve um falha no momento da autenticação motivos: senha,email incorretos ou token expirado.
 ### Gerando token
-O token de auteticação é gerado dentro do localStorage assim que o usuario faz o login e esse token é consultado em todas as rotas
+O token de auteticação é gerado dentro do localStorage assim que o usuário faz o login e esse token é consultado em todas as rotas
 ### Rotas 
 #### autenticação:   POST http://localhost:8080/auth 
 #### lista de jogos: GET  http://localhost:8080/games
