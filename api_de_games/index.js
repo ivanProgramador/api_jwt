@@ -5,14 +5,63 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 
 //o token vai ser gerado com base nessa hash
-// ele esta esposto nesse projeto porque é so para fins didáticos 
+// ele esta exposto nesse projeto porque é so para fins didáticos 
 
 const JWTSecret = "hjshdfkhdkfhdfkheiufhefiefiecefssdsdwe";
+
+
 
 //sem o cors a maioria das requisições externas seram bloqueadas então é importate lembrar de instalar ele na pi
 app.use(cors());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json());
+
+
+//midware que vai usar o token pra autenticar 
+
+function auth(req,res,next){
+
+    const authToken = req.headers['authorization'];
+    
+    if(authToken != undefined){
+       //o token é uma string que vem com um espaço 
+       //e o nome barrer para autenticar ele eu preciso pegar somente o token
+       //por isso eu estou usando a função split pra separar a string por espaço 
+       // e transformar o auttoken em um array de 2 posições 
+        var barrer = authToken.split(' ');
+
+        //agora eu pego so a sengunda posição que esta com o token 
+        var token = barrer[1];
+
+        //essa função ela faz o caminho inverso do token ela descriptografa os daos que estão no token 
+        jwt.verify(token,JWTSecret,(err,data)=>{
+
+            if(err){
+              
+                res.status(401);
+                res.json({err:"Token invalido"});
+
+            }else{
+                //sabendo desses dados eu posso autenticar 
+
+               req.token = token;
+               req.loggedUser = {id: data.id, email: data.email};
+               next(); //todo o midware twm que ter um next  pra evitar que a requisição fique presa
+            }
+        })
+
+
+    }else{
+        res.status(401);
+        res.json({err:"Não autorizado"});
+    }
+
+     
+      
+}
+
+
+
 
 var DB ={
     GAMES:[
@@ -116,10 +165,11 @@ app.post("/auth",(req,res)=>{
 
 
 //rota de listagem geral
-app.get("/games",(req,res)=>{
+app.get("/games",auth,(req,res)=>{
 
     res.statusCode = 200; //retornado o status da requisição 200 signifca ok que esta tudo certo 
-    res.json(DB.GAMES); //retornando o banco de dados em json
+                                                  
+    res.json({user: req.loggedUser,games: DB.GAMES}); //retornando o banco de dados em json junto com os dados do usuario logado
     
 });
 
@@ -163,7 +213,7 @@ app.get("/games/:id",(req,res)=>{
 
 //rota de cadastro 
 
-app.post("/games",(req,res)=>{
+app.post("/games",auth,(req,res)=>{
 
     //Desestruturando o body da requisição
     //para separar os valores do objeto body 
@@ -184,7 +234,7 @@ app.post("/games",(req,res)=>{
 
 //rota para apagar um jogo 
 
-app.delete("/games/:id",(req,res)=>{
+app.delete("/games/:id",auth,(req,res)=>{
     if(isNaN(req.params.id)){
         res.sendStatus(400)
 
@@ -205,7 +255,7 @@ app.delete("/games/:id",(req,res)=>{
 
 //rota de edição 
 
-app.put("/games/:id",(req,res)=>{
+app.put("/games/:id",auth,(req,res)=>{
 
     if(isNaN(req.params.id)){
 
