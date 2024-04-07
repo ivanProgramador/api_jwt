@@ -4,9 +4,9 @@ Essa API foi desenvolvida com o objetivo de administrar um pequena lista de jogo
 GET/games
 É responsavel por retornar a lista de todos os games cadastrados na base de dados em formato JSON 
 parametros: sem parametros exigidos
-### Respostas 
+### Resposta
 ok! 200 
-Caso essa resposta ocorra a requisição vai retrnar a lista de games cadastrados em formato JSON:
+Caso essa resposta ocorra a requisição vai retornar a lista de games cadastrados em formato JSON:
 ```
  "games": [
         {
