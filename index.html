@@ -127,7 +127,16 @@
             email,
             password
          }).then(res=>{
-            alert('Logado');
+
+            var token = res.data.token; //pegando o token que vem da rota auth
+
+            localStorage.setItem("token",token); //salvando o token no local storage
+
+            //por medida de segurança e melhor recalcular o token do usario toda vez que ele logar 
+            // a linha abaixo vai fazr isso de forma dinamica
+            axiosConfig.headers.Authorization = "Barrer" + localStorage.getItem("token");
+            alert('Logado'); 
+
          }).catch(err=>{
              alert("Logn incorreto");
              console.log(err)
@@ -148,7 +157,7 @@
 
     var axiosConfig = {
          headers: {
-            Authorization: "Bearer " + "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ2aWN0b3JkZXZAZ3VpYWRvcHJvZ3JhbWFkb3IuY29tIiwiaWF0IjoxNzEyNTIwNjkyLCJleHAiOjE3MTI2OTM0OTJ9.-QYIXTON5FwW6I5012rkAIplLpaN5IuyBqNEjPNXSlg"
+            Authorization: "Bearer " + localStorage.getItem("token") //pegando o token do localstorage pra usar ele 
          }
     }
 
@@ -189,7 +198,7 @@
 
            var id = idInput.value;
 
-            axios.put("http://localhost:8080/games/" + id,game).then(response=>{
+            axios.put("http://localhost:8080/games/" + id,game,axiosConfig).then(response=>{
             if(response.status == 200){
                 alert("Game atualizado");
                 
@@ -213,7 +222,7 @@
             price: priceInput.value,
          }
 
-         axios.post("http://localhost:8080/games",game).then(response=>{
+         axios.post("http://localhost:8080/games",game,axiosConfig).then(response=>{
              if(response.status == 200){
                  alert("Game cadastrado");
                 
@@ -279,7 +288,7 @@
 
             var id = listItem.getAttribute("data-id");
 
-            axios.delete("http://localhost:8080/games/"+id).then(response=>{
+            axios.delete("http://localhost:8080/games/"+id,axiosConfig).then(response=>{
                 alert("Game Deletado");
             }).catch(err =>{
                 console.log(err);
