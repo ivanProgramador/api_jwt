@@ -1,7 +1,7 @@
 # Api de games 
 Essa API foi desenvolvida com o objetivo de administrar um pequena lista de jogos
 #Endpoints
-###GET/games
+GET/games
 É responsavel por retornar a lista de todos os games cadastrados na base de dados em formato JSON 
 ###parametros: sem parametros exigidos
 #Respostas 
