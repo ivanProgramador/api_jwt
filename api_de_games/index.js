@@ -2,6 +2,12 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const app = express();
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
+
+//o token vai ser gerado com base nessa hash
+// ele esta esposto nesse projeto porque é so para fins didáticos 
+
+const JWTSecret = "hjshdfkhdkfhdfkheiufhefiefiecefssdsdwe";
 
 //sem o cors a maioria das requisições externas seram bloqueadas então é importate lembrar de instalar ele na pi
 app.use(cors());
@@ -57,18 +63,43 @@ app.post("/auth",(req,res)=>{
      if(email != undefined){
 
             var user = DB.users.find(u => u.email);
+
             if(user != undefined){
 
                 if(user.password == password){
-                    res.status(200);
-                    res.json({token:"Token falso"});
+
+                    //cada usuario tem um token diferente 
+                    //mas para ligar ele ao usuario eu tenho que usar dados do usuario
+                    //para gerar ele no caso eu vou usar id e email
+                    //a função jwt.sign() recebe 4 parametros
+                    // 1 -> quais dados ligam o usuario ao token
+                    // 2 -> a achave mestra que gera os tokens
+                    // 3 -> o tempo que esse token leva para expirar(no caso eu coloquei 48 horas)
+                    //4 -> a função de call back que entrega o token ao usuario atraves de json 
+                    
+                    jwt.sign({id: user.id, email: user.email},JWTSecret,{expiresIn:'48h'},(err,token)=>{
+
+                        if(err){
+                            res.status(500);
+                            res.json({err:"falha interna"})
+                        }else{
+                            res.status(200);
+                            res.json({token:token});
+                        }
+                         
+                    });
+
+
                 }else{
-                    res.sendStatus(401);
+
+
+
+                    res.status(401);
                     res.json({err:'Credenciais invalidas'})
                 }
 
             }else{
-                res.sendStatus(404);
+                res.status(404);
                 res.json({err:'E-mail não existe'})
             }
 
